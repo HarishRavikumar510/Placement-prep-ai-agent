@@ -1,16 +1,103 @@
-# React + Vite
+# 🚀 Placement Prep AI Agent
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered placement preparation platform built using React, Vite, and Gemini AI.
 
-Currently, two official plugins are available:
+This application helps students prepare for placement interviews by generating:
+- MCQ questions
+- Personalized study plans
+- Weak topic recommendations
+- Practice roadmaps
+- Smart preparation workflows
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+# ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🧠 AI MCQ Generator
 
-## Expanding the ESLint configuration
+Generate placement preparation MCQs for topics like:
+- SQL
+- DSA
+- OOP
+- Aptitude
+- Probability
+- Gen AI
+- SDLC
+- Git
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Users can:
+- Select question limits
+- Generate AI-powered MCQs
+- View answers and explanations
+- Practice topic-wise preparation
+
+---
+
+## 📅 AI Study Plan Generator
+
+The app creates personalized preparation plans based on:
+- Target company
+- Preparation days
+- Weak topics
+
+The AI generates:
+- Daily preparation schedule
+- Practice tasks
+- Coding suggestions
+- MCQ recommendations
+- Improvement strategies
+
+---
+
+## 🧠 Local Memory System
+
+The app remembers:
+- Recently practiced topics
+- Last selected topic
+
+This creates a lightweight agentic AI experience using browser localStorage.
+
+---
+
+## 🎨 Modern UI
+
+- Responsive design
+- Dark futuristic theme
+- Dynamic MCQ cards
+- Interactive topic buttons
+- Smart layouts
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+- React.js
+- Vite
+- JavaScript
+
+## AI Integration
+- Gemini API
+- @google/generative-ai
+
+## Storage
+- localStorage
+
+---
+
+# 📂 Project Structure
+
+```bash
+placement-ai-agent
+│
+├── public
+├── src
+│   ├── App.jsx
+│   ├── gemini.js
+│   ├── main.jsx
+│   └── assets
+│
+├── .env
+├── package.json
+├── vite.config.js
+└── README.md
