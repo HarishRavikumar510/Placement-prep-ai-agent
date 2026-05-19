@@ -1,103 +1,131 @@
 # 🚀 Placement Prep AI Agent
 
-An AI-powered placement preparation platform built using React, Vite, and Gemini AI.
-
-This application helps students prepare for placement interviews by generating:
-- MCQ questions
-- Personalized study plans
-- Weak topic recommendations
-- Practice roadmaps
-- Smart preparation workflows
+An AI-powered placement preparation platform built using React + Vite + Gemini AI.  
+This application helps students practice MCQs, generate study plans, track weak topics, solve coding problems, and monitor preparation progress through an intelligent dashboard.
 
 ---
 
 # ✨ Features
 
-## 🧠 AI MCQ Generator
+## 🔐 Authentication System
+- LocalStorage-based Login & Signup
+- Username-based profile system
+- Persistent user sessions
 
-Generate placement preparation MCQs for topics like:
-- SQL
-- DSA
-- OOP
-- Aptitude
-- Probability
-- Gen AI
-- SDLC
-- Git
+---
 
-Users can:
-- Select question limits
-- Generate AI-powered MCQs
-- View answers and explanations
-- Practice topic-wise preparation
+## 📝 AI MCQ Generator
+- Generate placement-level MCQs
+- Topics:
+  - SQL
+  - DSA
+  - OOP
+  - Aptitude
+  - Generative AI
+- AI-generated explanations and answers
 
 ---
 
 ## 📅 AI Study Plan Generator
-
-The app creates personalized preparation plans based on:
-- Target company
-- Preparation days
-- Weak topics
-
-The AI generates:
-- Daily preparation schedule
-- Practice tasks
-- Coding suggestions
-- MCQ recommendations
-- Improvement strategies
+- Personalized preparation roadmap
+- Company-specific preparation plans
+- Day-wise preparation tracking
+- Smart AI recommendations
 
 ---
 
-## 🧠 Local Memory System
-
-The app remembers:
-- Recently practiced topics
-- Last selected topic
-
-This creates a lightweight agentic AI experience using browser localStorage.
+## 📊 Progress Tracking Dashboard
+- Total MCQs practiced
+- Study plans generated
+- Topics practiced
+- Recommended next topic
 
 ---
 
-## 🎨 Modern UI
+## 🧠 Weak Topic Analyzer
+- Save weak topics
+- Practice difficult concepts
+- Intelligent topic tracking using local memory
 
-- Responsive design
-- Dark futuristic theme
-- Dynamic MCQ cards
-- Interactive topic buttons
-- Smart layouts
+---
+
+## 💻 Coding Question Generator
+- AI-generated coding interview questions
+- Difficulty selection:
+  - Easy
+  - Medium
+  - Hard
+- Includes:
+  - Problem statement
+  - Input/Output format
+  - Approach
+  - Hints
+
+---
+
+## 📂 Sidebar Navigation System
+- Modern expandable sidebar
+- Separate feature pages
+- Clean page-based UI architecture
 
 ---
 
 # 🛠️ Tech Stack
 
-## Frontend
 - React.js
 - Vite
 - JavaScript
-
-## AI Integration
-- Gemini API
-- @google/generative-ai
-
-## Storage
-- localStorage
+- Gemini AI API
+- LocalStorage
+- CSS Inline Styling
 
 ---
 
-# 📂 Project Structure
+# ⚡ AI Models Used
+
+- Gemini 2.0 Flash
+- Gemini 1.5 Flash (fallback support)
+
+---
+
+# 🎯 Project Goals
+
+This project aims to:
+- Improve placement preparation efficiency
+- Provide AI-assisted learning
+- Track student progress intelligently
+- Simulate modern EdTech AI systems
+
+---
+
+# 📸 Main Modules
+
+- Home Dashboard
+- MCQ Generator
+- Study Planner
+- Coding Question Generator
+- Weak Topic Analyzer
+- Progress Dashboard
+- Authentication System
+
+---
+
+# 🚀 Future Enhancements
+
+- 🎤 AI Mock Interview Agent
+- 📄 Resume Analyzer
+- ☁️ Firebase Integration
+- 🧾 PDF Export
+- 📱 Mobile App Version
+- 🧠 Multi-Agent AI Architecture
+- 🎙️ Voice-based Interview System
+
+---
+
+# ▶️ Installation
 
 ```bash
-placement-ai-agent
-│
-├── public
-├── src
-│   ├── App.jsx
-│   ├── gemini.js
-│   ├── main.jsx
-│   └── assets
-│
-├── .env
-├── package.json
-├── vite.config.js
-└── README.md
+git clone <your-repository-link>
+cd placement-prep-ai-agent
+npm install
+npm run dev
