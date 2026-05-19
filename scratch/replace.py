@@ -1,342 +1,20 @@
-import { useState } from "react";
-import {
-  generateMCQs,
-  generateStudyPlan,
-  generateCodingQuestion,
-} from "./gemini";
+import re
 
-function App() {
-  const [topic, setTopic] = useState(localStorage.getItem("lastTopic") || "");
-  const [mcqs, setMcqs] = useState([]);
-  const [output, setOutput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState(
-    JSON.parse(localStorage.getItem("topicHistory")) || []
-  );
+with open("src/App.jsx", "r") as f:
+    content = f.read()
 
-  const [company, setCompany] = useState("");
-  const [days, setDays] = useState("");
-  const [weakTopics, setWeakTopics] = useState("");
-  const [studyPlan, setStudyPlan] = useState([]);
-  const [planError, setPlanError] = useState("");
-  const [planLoading, setPlanLoading] = useState(false);
+# 1. Add isSidebarOpen state
+content = content.replace(
+    'const [codingError, setCodingError] = useState("");',
+    'const [codingError, setCodingError] = useState("");\n  const [isSidebarOpen, setIsSidebarOpen] = useState(false);'
+)
 
-  const [authUsername, setAuthUsername] = useState("");
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [loggedUser, setLoggedUser] = useState(
-    JSON.parse(localStorage.getItem("loggedUser")) || null
-  );
-
-  const [totalMCQs, setTotalMCQs] = useState(
-    Number(localStorage.getItem("totalMCQs")) || 0
-  );
-
-  const [studyPlanCount, setStudyPlanCount] = useState(
-    Number(localStorage.getItem("studyPlanCount")) || 0
-  );
-
-  const [weakTopicInput, setWeakTopicInput] = useState("");
-
-  const [savedWeakTopics, setSavedWeakTopics] = useState(
-    JSON.parse(localStorage.getItem("savedWeakTopics")) || []
-  );
-
-  const [codingTopic, setCodingTopic] = useState("");
-  const [difficulty, setDifficulty] = useState("Easy");
-  const [codingQuestion, setCodingQuestion] = useState(null);
-  const [codingLoading, setCodingLoading] = useState(false);
-  const [codingError, setCodingError] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  async function handleGenerate() {
-    if (!topic.trim()) {
-      alert("Enter a topic");
-      return;
-    }
-
-    setLoading(true);
-    setOutput("");
-    setMcqs([]);
-
-    localStorage.setItem("lastTopic", topic);
-
-    const updatedHistory = [
-      topic,
-      ...history.filter((item) => item !== topic),
-    ];
-
-    localStorage.setItem("topicHistory", JSON.stringify(updatedHistory));
-    setHistory(updatedHistory);
-
-    try {
-      const result = await generateMCQs(topic);
-      setMcqs(result);
-
-      const newTotal = totalMCQs + result.length;
-      setTotalMCQs(newTotal);
-      localStorage.setItem("totalMCQs", newTotal);
-    } catch (error) {
-      console.error(error);
-      setOutput(error.message || "Something went wrong while generating MCQs");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleStudyPlan() {
-    if (!company.trim() || !days.trim() || !weakTopics.trim()) {
-      alert("Enter company, days, and weak topics");
-      return;
-    }
-
-    setPlanLoading(true);
-    setStudyPlan([]);
-    setPlanError("");
-
-    try {
-      const result = await generateStudyPlan(company, days, weakTopics);
-      setStudyPlan(result);
-
-      const newPlanCount = studyPlanCount + 1;
-      setStudyPlanCount(newPlanCount);
-      localStorage.setItem("studyPlanCount", newPlanCount);
-    } catch (error) {
-      console.error("Study plan error:", error);
-      setPlanError(error.message || "Something went wrong");
-    } finally {
-      setPlanLoading(false);
-    }
-  }
-
-  function handleSignup() {
-    if (!authUsername.trim() || !authEmail.trim() || !authPassword.trim()) {
-      alert("Enter username, email, and password");
-      return;
-    }
-
-    const userData = {
-      username: authUsername,
-      email: authEmail,
-      password: authPassword,
-    };
-
-    localStorage.setItem("registeredUser", JSON.stringify(userData));
-    localStorage.setItem("loggedUser", JSON.stringify(userData));
-
-    setLoggedUser(userData);
-    setAuthUsername("");
-    setAuthEmail("");
-    setAuthPassword("");
-
-    alert("Signup successful");
-  }
-
-  function handleLogin() {
-    const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
-
-    if (!registeredUser) {
-      alert("No account found. Please sign up first.");
-      return;
-    }
-
-    if (
-      authEmail === registeredUser.email &&
-      authPassword === registeredUser.password
-    ) {
-      const currentUsername = authUsername.trim() || registeredUser.username || authEmail.split('@')[0];
-
-      const activeUser = {
-        ...registeredUser,
-        username: currentUsername
-      };
-
-      localStorage.setItem("registeredUser", JSON.stringify(activeUser));
-      localStorage.setItem("loggedUser", JSON.stringify(activeUser));
-
-      setLoggedUser(activeUser);
-      setAuthUsername("");
-      setAuthEmail("");
-      setAuthPassword("");
-    } else {
-      alert("Invalid email or password");
-    }
-  }
-
-  function handleLogout() {
-    localStorage.removeItem("loggedUser");
-    setLoggedUser(null);
-  }
-
-  function handleAddWeakTopic() {
-    if (!weakTopicInput.trim()) {
-      alert("Enter a weak topic");
-      return;
-    }
-
-    const updatedWeakTopics = [
-      weakTopicInput,
-      ...savedWeakTopics.filter((item) => item !== weakTopicInput),
-    ];
-
-    setSavedWeakTopics(updatedWeakTopics);
-
-    localStorage.setItem(
-      "savedWeakTopics",
-      JSON.stringify(updatedWeakTopics)
-    );
-
-    setWeakTopicInput("");
-  }
-
-  async function handleCodingQuestion() {
-    if (!codingTopic.trim()) {
-      alert("Enter a coding topic");
-      return;
-    }
-
-    setCodingLoading(true);
-    setCodingError("");
-    setCodingQuestion(null);
-
-    try {
-      const result = await generateCodingQuestion(codingTopic, difficulty);
-      setCodingQuestion(result);
-    } catch (error) {
-      console.error("Coding question error:", error);
-      setCodingError(error.message || "Something went wrong");
-    } finally {
-      setCodingLoading(false);
-    }
-  }
-
-  if (!loggedUser) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "linear-gradient(135deg, #020617, #0f172a, #1e293b)",
-          color: "white",
-          fontFamily: "Arial",
-          padding: "20px",
-        }}
-      >
-        <div
-          style={{
-            background: "rgba(30, 41, 59, 0.95)",
-            padding: "40px",
-            borderRadius: "18px",
-            border: "1px solid #334155",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.35)",
-            width: "100%",
-            maxWidth: "400px",
-            textAlign: "center",
-          }}
-        >
-          <h2 style={{ fontSize: "28px", marginBottom: "10px", color: "#38bdf8" }}>
-            Welcome to Placement AI
-          </h2>
-          <p style={{ color: "#cbd5e1", marginBottom: "30px" }}>
-            Sign in or create an account to continue.
-          </p>
-
-          <input
-            type="text"
-            placeholder="Username"
-            value={authUsername}
-            onChange={(e) => setAuthUsername(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "12px",
-              border: "1px solid #475569",
-              backgroundColor: "#1e293b",
-              color: "white",
-              fontSize: "16px",
-              boxSizing: "border-box",
-            }}
-          />
-
-          <input
-            type="email"
-            placeholder="Email address"
-            value={authEmail}
-            onChange={(e) => setAuthEmail(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "12px",
-              border: "1px solid #475569",
-              backgroundColor: "#1e293b",
-              color: "white",
-              fontSize: "16px",
-              boxSizing: "border-box",
-            }}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={authPassword}
-            onChange={(e) => setAuthPassword(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "15px",
-              marginBottom: "25px",
-              borderRadius: "12px",
-              border: "1px solid #475569",
-              backgroundColor: "#1e293b",
-              color: "white",
-              fontSize: "16px",
-              boxSizing: "border-box",
-            }}
-          />
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <button
-              onClick={handleLogin}
-              style={{
-                width: "100%",
-                padding: "15px",
-                borderRadius: "12px",
-                border: "none",
-                background: "linear-gradient(135deg, #2563eb, #7c3aed)",
-                color: "white",
-                cursor: "pointer",
-                fontSize: "16px",
-                fontWeight: "bold",
-              }}
-            >
-              Login
-            </button>
-
-            <button
-              onClick={handleSignup}
-              style={{
-                width: "100%",
-                padding: "15px",
-                borderRadius: "12px",
-                border: "1px solid #475569",
-                background: "transparent",
-                color: "#cbd5e1",
-                cursor: "pointer",
-                fontSize: "16px",
-                fontWeight: "bold",
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-
+# 2. Extract everything before the main return
+match = re.search(r'(if \(!loggedUser\).*?)(  return \(\n    <div\n      style=\{\{\n        minHeight: "100vh",)', content, flags=re.DOTALL)
+if match:
+    before_return = content[:match.end(1)]
+    
+    new_return = """
   return (
     <div
       style={{
@@ -349,66 +27,28 @@ function App() {
       }}
     >
       <div style={{ padding: "40px", transition: "all 0.3s ease", opacity: isSidebarOpen ? 0.3 : 1 }}>
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
           alignItems: "center",
           marginBottom: "40px"
         }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "10px 15px",
-              background: "rgba(30, 41, 59, 0.7)",
-              borderRadius: "999px",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-            }}
-          >
-            <div
-              style={{
-                width: "35px",
-                height: "35px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #38bdf8, #818cf8)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "bold",
-                color: "white",
-                fontSize: "16px",
-                boxShadow: "0 0 10px rgba(56, 189, 248, 0.5)",
-              }}
-            >
-              {loggedUser?.username ? loggedUser.username.charAt(0).toUpperCase() : "U"}
-            </div>
-            <span style={{ color: "white", fontWeight: "bold", fontSize: "15px" }}>
-              {loggedUser?.username || "User"}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <span style={{ color: "#86efac", fontWeight: "bold" }}>
+              {loggedUser?.email}
             </span>
             <button
               onClick={handleLogout}
               style={{
-                padding: "6px 14px",
-                borderRadius: "999px",
-                border: "1px solid #ef4444",
-                background: "rgba(239, 68, 68, 0.1)",
-                color: "#f87171",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "none",
+                backgroundColor: "#ef4444",
+                color: "white",
                 cursor: "pointer",
                 fontSize: "12px",
                 fontWeight: "bold",
-                marginLeft: "8px",
-                transition: "all 0.2s",
-              }}
-              onMouseOver={(e) => {
-                e.target.style.background = "#ef4444";
-                e.target.style.color = "white";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.background = "rgba(239, 68, 68, 0.1)";
-                e.target.style.color = "#f87171";
+                boxShadow: "0 4px 6px rgba(239, 68, 68, 0.3)",
               }}
             >
               Logout
@@ -416,7 +56,7 @@ function App() {
           </div>
 
           <div style={{ textAlign: "center" }}>
-            <h1 style={{ fontSize: "52px", margin: "0 0 20px 0" }}>
+            <h1 style={{ fontSize: "52px", margin: "0 0 10px 0" }}>
               Placement Prep AI Agent
             </h1>
             <p style={{ color: "#cbd5e1", margin: 0 }}>
@@ -969,7 +609,7 @@ function App() {
                 <option value="Hard">Hard</option>
               </select>
             </div>
-
+            
             <button
               onClick={handleCodingQuestion}
               disabled={codingLoading}
@@ -1014,10 +654,10 @@ function App() {
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
                 <h3 style={{ color: "#c084fc", margin: 0, fontSize: "18px" }}>{codingQuestion.title}</h3>
-                <span style={{
-                  padding: "6px 10px",
-                  borderRadius: "20px",
-                  fontSize: "12px",
+                <span style={{ 
+                  padding: "6px 10px", 
+                  borderRadius: "20px", 
+                  fontSize: "12px", 
                   fontWeight: "bold",
                   backgroundColor: codingQuestion.difficulty === "Easy" ? "#065f46" : codingQuestion.difficulty === "Medium" ? "#b45309" : "#991b1b",
                   color: "white"
@@ -1040,10 +680,10 @@ function App() {
 
               <div style={{ marginBottom: "20px" }}>
                 <strong style={{ color: "#94a3b8", fontSize: "14px" }}>Example:</strong>
-                <pre style={{
-                  backgroundColor: "#0f172a",
-                  padding: "15px",
-                  borderRadius: "8px",
+                <pre style={{ 
+                  backgroundColor: "#0f172a", 
+                  padding: "15px", 
+                  borderRadius: "8px", 
                   overflowX: "auto",
                   marginTop: "8px",
                   border: "1px solid #1e293b",
@@ -1071,3 +711,12 @@ function App() {
 }
 
 export default App;
+"""
+    
+    final_content = before_return + new_return
+    
+    with open("src/App.jsx", "w", encoding="utf-8") as f:
+        f.write(final_content)
+    print("Success")
+else:
+    print("Failed to match return statement")
